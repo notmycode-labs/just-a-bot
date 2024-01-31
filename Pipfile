@@ -8,6 +8,7 @@ py-cord = "*"
 psutil = "*"
 py-cpuinfo = "*"
 python-dotenv = "*"
+gitpython = "*"
 
 [dev-packages]
 
