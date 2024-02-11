@@ -9,6 +9,7 @@ psutil = "*"
 py-cpuinfo = "*"
 python-dotenv = "*"
 gitpython = "*"
+pillow = "*"
 
 [dev-packages]
 
