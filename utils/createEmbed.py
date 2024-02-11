@@ -1,6 +1,6 @@
 import discord
 
-def create_embed(title, description, color=discord.Color.blue(), fields=None, author=None, footer=None):
+def create_embed(title, description="", color=discord.Color.blue(), fields=None, author=None, footer=None):
     """
     Create a Discord embed using a dictionary-like structure.
 
