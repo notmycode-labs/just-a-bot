@@ -12,6 +12,10 @@ class MusicCog(commands.Cog):
         self.bot = bot
         self.players = {}
 
+    async def send_embed_response(self, ctx, embed_data):
+        embed = create_embed(**embed_data)
+        await ctx.respond(embed=embed)
+
     @slash_command(name="join", description="Join the user's voice channel.")
     async def join(self, ctx):
         channel = ctx.author.voice.channel
@@ -20,7 +24,13 @@ class MusicCog(commands.Cog):
             await voice.move_to(channel)
         else:
             voice = await channel.connect()
-    
+        embed_data = {
+            "title": "Voice Channel Joined",
+            "description": f"Joined voice channel: {channel.name}",
+            "color": discord.Color.blue()
+        }
+        await self.send_embed_response(ctx, embed_data)
+
     @slash_command(name="play", description="Play sound from a YouTube URL.")
     async def play(self, ctx, url: str):
         YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
@@ -33,9 +43,20 @@ class MusicCog(commands.Cog):
             URL = info['url']
             voice.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
             voice.is_playing()
-            await ctx.respond("Bot is playing")
+
+            embed_data = {
+                "title": "Now Playing",
+                "description": f"[{info['title']}]({url})",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
         else:
-            await ctx.respond("Bot is already playing")
+            embed_data = {
+                "title": "Bot is Playing",
+                "description": "Bot is already playing",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
 
     @slash_command(name="resume", description="Resume playback.")
     async def resume(self, ctx):
@@ -43,7 +64,19 @@ class MusicCog(commands.Cog):
 
         if not voice.is_playing():
             voice.resume()
-            await ctx.respond("Bot is resuming")
+            embed_data = {
+                "title": "Playback Resumed",
+                "description": "Bot is resuming",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
+        else:
+            embed_data = {
+                "title": "Bot is Playing",
+                "description": "Bot is already playing",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
 
     @slash_command(name="pause", description="Pause playback.")
     async def pause(self, ctx):
@@ -51,7 +84,19 @@ class MusicCog(commands.Cog):
 
         if voice.is_playing():
             voice.pause()
-            await ctx.respond("Bot has been paused")
+            embed_data = {
+                "title": "Playback Paused",
+                "description": "Bot has been paused",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
+        else:
+            embed_data = {
+                "title": "Bot is Not Playing",
+                "description": "Bot is not currently playing",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
 
     @slash_command(name="stop", description="Stop playback.")
     async def stop(self, ctx):
@@ -59,7 +104,19 @@ class MusicCog(commands.Cog):
 
         if voice.is_playing():
             voice.stop()
-            await ctx.respond("Stopping...")
+            embed_data = {
+                "title": "Playback Stopped",
+                "description": "Stopping...",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
+        else:
+            embed_data = {
+                "title": "Bot is Not Playing",
+                "description": "Bot is not currently playing",
+                "color": discord.Color.blue()
+            }
+            await self.send_embed_response(ctx, embed_data)
 
 def setup(bot):
     bot.add_cog(MusicCog(bot))
