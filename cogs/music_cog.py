@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.commands import slash_command
 from discord import FFmpegPCMAudio
 from discord import TextChannel
+from youtube_dl import YoutubeDL
 from utils.createEmbed import create_embed
 
 class MusicCog(commands.Cog):
@@ -20,18 +21,21 @@ class MusicCog(commands.Cog):
         else:
             voice = await channel.connect()
     
-    @slash_command(name="playsound", description="Play any sound from an MP3 link in the voice channel.")
-    async def play_sound(self, ctx, mp3_link: str):
+    @slash_command(name="play", description="Play sound from a YouTube URL.")
+    async def play(self, ctx, url: str):
+        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
+        FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         voice = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
 
         if not voice.is_playing():
-            try:
-                voice.play(discord.FFmpegOpusAudio(mp3_link))
-                await ctx.respond("Bot is playing the sound")
-            except Exception as e:
-                await ctx.respond(f"An error occurred: {e}")
+            with YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(url, download=False)
+            URL = info['url']
+            voice.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+            voice.is_playing()
+            await ctx.respond("Bot is playing")
         else:
-            await ctx.respond("Bot is already playing a sound")
+            await ctx.respond("Bot is already playing")
 
     @slash_command(name="resume", description="Resume playback.")
     async def resume(self, ctx):
