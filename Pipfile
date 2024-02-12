@@ -10,6 +10,7 @@ py-cpuinfo = "*"
 python-dotenv = "*"
 gitpython = "*"
 pillow = "*"
+youtube-dl = "*"
 
 [dev-packages]
 
