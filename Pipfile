@@ -11,6 +11,7 @@ python-dotenv = "*"
 gitpython = "*"
 pillow = "*"
 youtube-dl = "*"
+requests = "*"
 
 [dev-packages]
 
