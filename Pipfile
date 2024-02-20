@@ -12,6 +12,7 @@ gitpython = "*"
 pillow = "*"
 youtube-dl = "*"
 requests = "*"
+discord-webhook = "*"
 
 [dev-packages]
 

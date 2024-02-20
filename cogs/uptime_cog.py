@@ -8,7 +8,7 @@ from utils.createEmbed import create_embed
 class UptimeCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.start_time = time.time()
+        self.start_time = 0
 
     @slash_command(name="uptime", description="Check the bot's uptime.")
     async def uptime(self, ctx):
